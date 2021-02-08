@@ -1,0 +1,2 @@
+This is the directory where all input text files can be found.
+Make sure to prepend "data/" to all filenames to be able to access these files.

@@ -1,0 +1,2 @@
+This is the directory where all output (encoded binary files, frequency weights and decoded.txt files)
+should be placed. Make sure to prepend "output/" to all filenames to make this happen
