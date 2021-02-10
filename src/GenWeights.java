@@ -2,9 +2,14 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -38,7 +43,7 @@ public class GenWeights extends Application {
     private HBox btnBox = new HBox(15);
     
     /** The file handles for input (inf) and output (outf) */
-    private File inf,outf;
+    private File inputFile,outputFile;
     
     /** The weights - the # of occurences of each character with index 0-127. */
     private int[] weights = new int[128]; 
@@ -94,7 +99,8 @@ public class GenWeights extends Application {
 		Button save = new Button("Save To File");
 		
 		// TODO #1 create the setOnAction() events to handle button pushes.
-
+		genWt.setOnAction(ae -> this.generateWeights("data/"+inputFile.getText()));
+		save.setOnAction(ae -> this.saveWeightsToFile("output/"+outputFile.getText()));
 		
 		btnBox.setAlignment(Pos.CENTER);
 		btnBox.getChildren().addAll(genWt,save);
@@ -128,10 +134,33 @@ public class GenWeights extends Application {
 	 *
 	 * @param infName - the name of the file to read; should come from the appropriate
 	 *                  text field
+	 * @throws FileNotFoundException 
 	 *              
 	 */
-	private void generateWeights(String infName) {
-		// TODO #2: write this method and any helper methods
+	private void generateWeights(String infName){
+		inputFile = new File(infName);
+		
+		weights = new int[128];
+		
+		String stringFile = ""; 
+		
+		try(BufferedReader bufferRead = new BufferedReader(new FileReader(inputFile))) {
+			
+			String newLine; 
+			while((newLine=bufferRead.readLine()) != null)
+				stringFile += newLine; 
+			
+		} catch (IOException e) {
+			throwAlert("Input File Error", "Error in reading the file");
+			e.printStackTrace(); 
+			return;
+		}
+		
+		for(char character : stringFile.toCharArray())
+			if ((int)character < 128)
+				weights[(int)character]++; 
+			
+		
 		return;	
 	}
 	
@@ -169,15 +198,43 @@ public class GenWeights extends Application {
 	 * @param outfName the outf name
 	 */
 	private void saveWeightsToFile(String outfName) {
-		// TODO #3: write this method (and any helper methods)
-		return;
+		outputFile = new File(outfName); 
+		
+		String outputString = "";
+		PrintWriter printWriter;
+		
+		if (outputFile.exists())
+			throwAlert("File exists", "The file you typed exists");
+		
+		try {
+			printWriter = new PrintWriter(new FileWriter(outputFile));
+		}
+		
+		catch (IOException e) {
+			throwAlert("Output File Error", "Error in using the file");
+			return; 
+		} 
+		
+		for(int i = 0; i < weights.length; i++)
+			outputString += i + "," + weights[i] + "\n"; 
+		
+		throwAlert("File saved", "The information has been saved"); 
+		
+		printWriter.write(outputString);
+		printWriter.close();
+
 	}
 	
 	//TODO #4: I strongly recommend writing reuseable alerts for input errors, output
 	//         errors, confirmation and information... You can supply the specific error
 	//         message as a string that is passed in. Write these methods here....
 	
-	
+	private void throwAlert(String headerText, String contentText) {
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setHeaderText(headerText);
+		alert.setContentText(contentText);
+		alert.showAndWait();
+	}
 	
 	/**
 	 * The main method.
