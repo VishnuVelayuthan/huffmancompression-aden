@@ -224,7 +224,7 @@ public class GenWeights extends Application {
 				return; 
 		System.out.println("Successsss");
 		//If cannot write over file
-		if(!outputFile.canWrite()) {
+		if(!outputFile.canWrite() && outputFile.exists()) {
 			errorAlert("Cannot Write File", "Cannot write on inputted file");
 			return;
 		}
