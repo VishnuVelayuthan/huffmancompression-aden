@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -141,7 +143,7 @@ public class GenWeights extends Application {
 		
 		//File name Empty Check 
 		if(infName.isEmpty()) {
-			inputErrorAlert("File is Empty", "Type valid file name");
+			errorAlert("File is Empty", "Type valid file name");
 			return;
 		}
 		
@@ -149,13 +151,13 @@ public class GenWeights extends Application {
 		
 		//File does not exist
 		if(!inputFile.exists()) {
-			inputErrorAlert("No File Found", "Type an appropriate file name"); 
+			errorAlert("No File Found", "Type an appropriate file name"); 
 			return;
 		}
 		
 		//Cannot read file
 		if(!inputFile.canRead()) {
-			inputErrorAlert("Can't Read File", "Cannot read inputted file");
+			errorAlert("Can't Read File", "Cannot read inputted file");
 			return;
 		}
 		
@@ -171,8 +173,11 @@ public class GenWeights extends Application {
 						weights[(int)character]++;
 			
 		} catch (IOException e) {
-			throwAlert("Input File Error", "Error in reading the file");
+			errorAlert("Input File Error", "Error in reading the file");
+			return;
 		}
+		
+		informationAlert("File Read Successfully", "The file desired was read accurately");
 	}
 	
 	/**
@@ -213,21 +218,30 @@ public class GenWeights extends Application {
 		
 		PrintWriter pw;
 		
+		//If file exists, check if user wants to overwrite
 		if (outputFile.exists())
-			throwAlert("File exists", "The file you typed exists");
+			if(!confirmationAlert("Save File Exists", "The file chosen to write exists, do you want to overwrite it?"))
+				return; 
+		System.out.println("Successsss");
+		//If cannot write over file
+		if(!outputFile.canWrite()) {
+			errorAlert("Cannot Write File", "Cannot write on inputted file");
+			return;
+		}
+		
 		
 		try {
 			pw = new PrintWriter(new FileWriter(outputFile));
 		}
 		catch (IOException e) {
-			throwAlert("Output File Error", "Error in using the file");
+			errorAlert("Output File Error", "Error in using the file");
 			return; 
 		} 
 		
 		for(int i = 0; i < weights.length; i++)
 			pw.println(i + "," + weights[i]); 
 		
-		throwAlert("File saved", "The information has been saved"); 
+		informationAlert("File saved", "The information has been saved"); 
 		
 		pw.close();
 
@@ -237,17 +251,32 @@ public class GenWeights extends Application {
 	//         errors, confirmation and information... You can supply the specific error
 	//         message as a string that is passed in. Write these methods here....
 	
-	private void inputErrorAlert(String errorHeader, String errorContent) {
-		throwAlert(errorHeader, errorContent);
+	private void errorAlert(String errorHeader, String errorContent) {
+		Alert alert = new Alert(AlertType.ERROR);
+		throwAlert(alert, errorHeader, errorContent);
 	}
 	
+	private void informationAlert(String infoHeader, String infoContent) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		throwAlert(alert, infoHeader, infoContent); 
+	}	
 	
-	private void throwAlert(String headerText, String contentText) {
-		Alert alert = new Alert(AlertType.WARNING);
+	private void throwAlert(Alert alert, String headerText, String contentText) {
 		alert.setHeaderText(headerText);
 		alert.setContentText(contentText);
 		alert.showAndWait();
 	}
+	
+	
+	private boolean confirmationAlert(String questionHeader, String questionContent) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		
+		alert.setHeaderText(questionHeader);
+		alert.setContentText(questionContent);
+		
+		return alert.showAndWait().get() == ButtonType.OK; 
+	}
+	
 	
 	/**
 	 * The main method.
