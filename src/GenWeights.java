@@ -142,26 +142,17 @@ public class GenWeights extends Application {
 		
 		weights = new int[128];
 		
-		String stringFile = ""; 
-		
 		try(BufferedReader bufferRead = new BufferedReader(new FileReader(inputFile))) {
 			
 			String newLine; 
 			while((newLine=bufferRead.readLine()) != null)
-				stringFile += newLine; 
+				for(char character : newLine.toCharArray()) 
+					if ((int)character < 128)
+						weights[(int)character]++;
 			
 		} catch (IOException e) {
 			throwAlert("Input File Error", "Error in reading the file");
-			e.printStackTrace(); 
-			return;
 		}
-		
-		for(char character : stringFile.toCharArray())
-			if ((int)character < 128)
-				weights[(int)character]++; 
-			
-		
-		return;	
 	}
 	
 	/**
@@ -201,27 +192,25 @@ public class GenWeights extends Application {
 		outputFile = new File(outfName); 
 		
 		String outputString = "";
-		PrintWriter printWriter;
+		PrintWriter pw;
 		
 		if (outputFile.exists())
 			throwAlert("File exists", "The file you typed exists");
 		
 		try {
-			printWriter = new PrintWriter(new FileWriter(outputFile));
+			pw = new PrintWriter(new FileWriter(outputFile));
 		}
-		
 		catch (IOException e) {
 			throwAlert("Output File Error", "Error in using the file");
 			return; 
 		} 
 		
 		for(int i = 0; i < weights.length; i++)
-			outputString += i + "," + weights[i] + "\n"; 
+			pw.println(i + "," + weights[i]); 
 		
 		throwAlert("File saved", "The information has been saved"); 
 		
-		printWriter.write(outputString);
-		printWriter.close();
+		pw.close();
 
 	}
 	
