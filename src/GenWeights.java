@@ -138,9 +138,29 @@ public class GenWeights extends Application {
 	 *              
 	 */
 	private void generateWeights(String infName){
+		
+		//File name Empty Check 
+		if(infName.isEmpty()) {
+			inputErrorAlert("File is Empty", "Type valid file name");
+			return;
+		}
+		
 		inputFile = new File(infName);
 		
-		weights = new int[128];
+		//File does not exist
+		if(!inputFile.exists()) {
+			inputErrorAlert("No File Found", "Type an appropriate file name"); 
+			return;
+		}
+		
+		//Cannot read file
+		if(!inputFile.canRead()) {
+			inputErrorAlert("Can't Read File", "Cannot read inputted file");
+			return;
+		}
+		
+		
+		initWeights(); 
 		
 		try(BufferedReader bufferRead = new BufferedReader(new FileReader(inputFile))) {
 			
@@ -191,7 +211,6 @@ public class GenWeights extends Application {
 	private void saveWeightsToFile(String outfName) {
 		outputFile = new File(outfName); 
 		
-		String outputString = "";
 		PrintWriter pw;
 		
 		if (outputFile.exists())
@@ -217,6 +236,11 @@ public class GenWeights extends Application {
 	//TODO #4: I strongly recommend writing reuseable alerts for input errors, output
 	//         errors, confirmation and information... You can supply the specific error
 	//         message as a string that is passed in. Write these methods here....
+	
+	private void inputErrorAlert(String errorHeader, String errorContent) {
+		throwAlert(errorHeader, errorContent);
+	}
+	
 	
 	private void throwAlert(String headerText, String contentText) {
 		Alert alert = new Alert(AlertType.WARNING);
