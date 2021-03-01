@@ -277,6 +277,30 @@ public class GenWeights extends Application {
 		return alert.showAndWait().get() == ButtonType.OK; 
 	}
 	
+	private void readInputFile(File inf) {
+		try {
+			BufferedReader data = new BufferedReader(new FileReader(inf));
+			int c;
+			while ((c = data.read()) != -1) { // -1 indicates the end of File....
+				c = c & 0x7f;
+				weights[c] ++;	
+			}
+
+		} catch (IOException e) {
+			System.err.println("Error in reading file: "+inf.getName());
+			e.printStackTrace();
+		}
+	}	
+
+
+	int[] readInputFileAndReturnWeights(String infName) {
+		System.out.println("Generating weights for: "+infName);
+		initWeights();
+		readInputFile(new File(infName));
+		return weights;
+	}	
+
+	
 	
 	/**
 	 * The main method.
