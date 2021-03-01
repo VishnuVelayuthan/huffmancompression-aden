@@ -93,53 +93,6 @@ public class EncodeDecode {
 			gui.errorAlert("Can't read file", "Type valid file name");
 		}
 		
-		try(BufferedReader bufferRead = new BufferedReader(new FileReader(frequencyFile))) {
-			
-			weights = new int[128];
-			String newLine; 
-			int freqVal;
-			int intVal; 
-			
-			while((newLine=bufferRead.readLine()) != null) {
-				intVal = Integer.parseInt(newLine.split(",")[0]); 
-				freqVal = Integer.parseInt(newLine.split(",")[1]);
-				weights[intVal] = freqVal; 
-			}
-			
-		} catch (IOException e) {
-			gui.errorAlert("Input File Error", "Error in reading the file");
-			return;
-		}
-		
-		gui.informationAlert("File Read Successfully", "The file desired was read accurately");
-			
-		//Queue that is ordered with compareWeightOrd
-		PriorityQueue<HuffmanTreeNode> pQueue = new PriorityQueue<HuffmanTreeNode>(128,  HuffmanTreeNode.compareWeightOrd); 
-		
-		//Adding the vals to queue
-		for(int ordVal = 0; ordVal < weights.length; ordVal++)
-			pQueue.add(new HuffmanTreeNode(ordVal, weights[ordVal])); 
-		
-		HuffmanTreeNode leftNode;
-		HuffmanTreeNode rightNode;
-		HuffmanTreeNode parentNode; 
-		
-		while(pQueue.size() !=1 ) {
-			leftNode = (HuffmanTreeNode) pQueue.poll();
-			rightNode = (HuffmanTreeNode) pQueue.poll();
-			parentNode = new HuffmanTreeNode(-1, leftNode.getWeight() + rightNode.getWeight());
-			pQueue.add(parentNode);
-			if (pQueue.size() == 1) {
-				root = parentNode;
-			}
-		}
-		
-		encodeMap = new String[128];
-		
-		for(int ordVal = 0; ordVal < weights.length; ordVal++) {
-			encodeMap[ordVal] = findPath(ordVal, "", root);
-			System.out.println(encodeMap[ordVal]);
-		}
 		
 		
 	}
