@@ -112,6 +112,10 @@ public class HuffmanTreeNode {
 	public void setCharValue(char charValue) {
 		this.charValue = charValue;
 	}
+	
+	public int getId() {
+		return this.id; 
+	}
 
 	/**
 	 * Gets the left.
@@ -167,7 +171,7 @@ public class HuffmanTreeNode {
 			else {
 				if(ht1.getOrdValue() != ht2.getOrdValue())
 					return ht1.getOrdValue() - ht2.getOrdValue();
-				return ht1.getOrdValue() - ht2.getOrdValue(); 
+				return ht1.getId() - ht2.getId(); 
 			}
 		}
 	};

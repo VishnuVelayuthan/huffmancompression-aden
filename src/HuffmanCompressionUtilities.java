@@ -94,13 +94,16 @@ public class HuffmanCompressionUtilities {
 	 */
 	void initializeHuffmanQueue(boolean minimize) {
 		queue = new PriorityQueue<HuffmanTreeNode>(128,  HuffmanTreeNode.compareWeightOrd);
-		
+		queue.add(new HuffmanTreeNode(0,1));
 		for(int ordVal = 0; ordVal < weights.length; ordVal++) {
-			if(minimize)
-				if(weights[ordVal] != 0)
+			if(minimize) {
+				if(weights[ordVal] != 0){
 					queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
-			else 
+				}
+			}
+			else {
 				queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
+			}
 		}
 	}
 	
@@ -144,12 +147,7 @@ public class HuffmanCompressionUtilities {
 		
 		while(queue.size() !=1 ) {
 			
-			leftNode = queue.poll();
-			if (queue.size() == 0) {
-				root = leftNode;
-				break;
-			}
-			
+			leftNode = queue.poll();			
 			rightNode = queue.poll();
 			
 			parentNode = new HuffmanTreeNode(-1, leftNode.getWeight() + rightNode.getWeight());
@@ -158,10 +156,9 @@ public class HuffmanCompressionUtilities {
 			
 			queue.add(parentNode);
 			
-			if (queue.size() == 1)
-				root = parentNode;
 		}
 		
+		root = queue.poll();
 	}
 	
 	/**
@@ -192,7 +189,7 @@ public class HuffmanCompressionUtilities {
 	 * @param level the level
 	 */
 	public void createHuffmanCodes(HuffmanTreeNode node, String code, int level) {
-		//TODO: write this method
+		findCode(code, node); 
 	}
 
 	/**
@@ -254,19 +251,19 @@ public class HuffmanCompressionUtilities {
 		return -1; // remove when completed.
 	}
 	
-	private void findCode(int ordVal, String code, HuffmanTreeNode iterNode) {
+	private void findCode(String code, HuffmanTreeNode iterNode) {
 		
 		//Base case
 		if(iterNode == null)
 			return; 
 		
-		if(iterNode.getOrdValue() == ordVal) {
-			encodeMap[ordVal] = code; 
+		if(iterNode.isLeaf()) {
+			encodeMap[iterNode.getOrdValue()] = code; 
 			return; 
 		}
 		
-		findCode(ordVal, code + "0", iterNode.getLeft());
-		findCode(ordVal, code + "1", iterNode.getRight()); 
+		findCode(code + "0", iterNode.getLeft());
+		findCode(code + "1", iterNode.getRight()); 
 	}
 	
 	/**
