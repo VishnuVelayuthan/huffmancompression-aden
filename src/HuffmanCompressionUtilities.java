@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Scanner;
 
 // TODO: Auto-generated Javadoc
@@ -94,17 +96,24 @@ public class HuffmanCompressionUtilities {
 	 */
 	void initializeHuffmanQueue(boolean minimize) {
 		queue = new PriorityQueue<HuffmanTreeNode>(128,  HuffmanTreeNode.compareWeightOrd);
+		
 		queue.add(new HuffmanTreeNode(0,1));
+		
 		for(int ordVal = 0; ordVal < weights.length; ordVal++) {
+			
 			if(minimize) {
 				if(weights[ordVal] != 0){
 					queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
 				}
 			}
+			
 			else {
 				queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
 			}
 		}
+		
+//		dumpQueue("After initializatoins"); 
+		
 	}
 	
 	/**
@@ -137,17 +146,18 @@ public class HuffmanCompressionUtilities {
 	 */
 	public void buildHuffmanTree(boolean minimize) {
 		
-		initializeHuffmanQueue(minimize); 
 		encodeMap = new String[128];
 		root = null; 
+		initializeHuffmanQueue(minimize); 
+		
 		
 		HuffmanTreeNode leftNode;
 		HuffmanTreeNode rightNode;
 		HuffmanTreeNode parentNode; 
 		
-		while(queue.size() !=1 ) {
+		while(queue.size() != 1 ) {
 			
-			leftNode = queue.poll();			
+			leftNode = queue.poll();
 			rightNode = queue.poll();
 			
 			parentNode = new HuffmanTreeNode(-1, leftNode.getWeight() + rightNode.getWeight());
@@ -292,4 +302,26 @@ public class HuffmanCompressionUtilities {
 	public String toString() {
 		return str;
 	}
+	
+	/**
+	 * For debugging purposes
+	 * This project is kinda nice honestly
+	 */
+	void dumpQueue(String msg) {
+		   System.out.println(msg);
+		   HuffmanTreeNode node;
+		   Queue<HuffmanTreeNode> saveQ = new LinkedList<HuffmanTreeNode>();
+
+		   while (!queue.isEmpty()) {
+		      node = queue.remove();
+		      saveQ.add(node);
+		      System.out.println("   wt:"+node.getWeight()+"  ord=" +node.getOrdValue()+"  id="+node.getId());
+
+		   }
+
+		   while (!saveQ.isEmpty())
+		       queue.add(saveQ.remove());
+
+		}
+	
 } 
