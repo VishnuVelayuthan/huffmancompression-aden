@@ -155,14 +155,13 @@ public class HuffmanCompressionUtilities {
 		HuffmanTreeNode rightNode;
 		HuffmanTreeNode parentNode; 
 		
-		while(queue.size() !=1 ) {
+		while(queue.size() != 1 ) {
 			
 			leftNode = queue.poll();
 			rightNode = queue.poll();
 			
-			parentNode = new HuffmanTreeNode(-1, leftNode.getWeight() + rightNode.getWeight());
-			parentNode.setRight(rightNode); 
-			parentNode.setLeft(leftNode); 
+			parentNode = new HuffmanTreeNode(leftNode.getWeight() + rightNode.getWeight(),
+					leftNode, rightNode);
 			
 			queue.add(parentNode);
 			

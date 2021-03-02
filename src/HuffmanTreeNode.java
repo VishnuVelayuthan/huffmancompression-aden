@@ -52,6 +52,8 @@ public class HuffmanTreeNode {
 	 * @param right the right
 	 */
 	public HuffmanTreeNode(int weight, HuffmanTreeNode left, HuffmanTreeNode right) {
+		id = ID;
+		ID++;
 		this.weight = weight;
 		this.ordValue = -1;
 		this.charValue = 0;
