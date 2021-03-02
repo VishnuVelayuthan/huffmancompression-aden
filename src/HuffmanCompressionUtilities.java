@@ -36,9 +36,11 @@ public class HuffmanCompressionUtilities {
 	 * Instantiates a new huffman compression utilities.
 	 */
 	public HuffmanCompressionUtilities() {
-		//TODO: 
-		// Initialize Priority Queue with an appropriate comparator)
-		// Initialize root to null, and all other private variables
+		queue = new PriorityQueue<HuffmanTreeNode>(128,  HuffmanTreeNode.compareWeightOrd);
+		root = null;
+		encodeMap = null;
+		str = null;
+		weights = null;
 	}
 	
 	/**
@@ -99,14 +101,13 @@ public class HuffmanCompressionUtilities {
 		
 		queue.add(new HuffmanTreeNode(0,1));
 		
-		for(int ordVal = 0; ordVal < weights.length; ordVal++) {
+		for(int ordVal = 1; ordVal < weights.length; ordVal++) {
 			
 			if(minimize) {
 				if(weights[ordVal] != 0){
 					queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
 				}
 			}
-			
 			else {
 				queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
 			}
@@ -146,16 +147,15 @@ public class HuffmanCompressionUtilities {
 	 */
 	public void buildHuffmanTree(boolean minimize) {
 		
+		initializeHuffmanQueue(minimize); 
 		encodeMap = new String[128];
 		root = null; 
-		initializeHuffmanQueue(minimize); 
-		
 		
 		HuffmanTreeNode leftNode;
 		HuffmanTreeNode rightNode;
 		HuffmanTreeNode parentNode; 
 		
-		while(queue.size() != 1 ) {
+		while(queue.size() !=1 ) {
 			
 			leftNode = queue.poll();
 			rightNode = queue.poll();
