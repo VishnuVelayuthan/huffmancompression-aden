@@ -67,7 +67,20 @@ public class BinaryIO {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	void convStrToBin(String inBinStr) throws IOException {
-		// TODO: Write this method
+		
+		binStr += inBinStr; 
+		
+		int intStr = 0;
+		String byteStr;
+		byte writeByte;
+		
+		while(binStr.length() >= 8) {
+			byteStr = binStr.substring(0, 8);
+			writeByte = (byte)(strToInt(byteStr) & 0xff);
+			binOutput.write(writeByte);
+			binStr = binStr.substring(8); 
+		}
+		
 	}
 	
 	/**
@@ -77,9 +90,16 @@ public class BinaryIO {
 	 * @return the string
 	 */
 	 String convBinToStr(byte aByte) {
-		String str = "";
-		// TODO: Write this method
-		return str;
+		String binStr = "";
+		
+		byte newByte;
+		
+		for(int i = 0; i < 8; i++) {
+			newByte = (byte)(aByte << (8-i));
+//			if(newByte )
+		}
+		
+		return binStr;
 	}
 	
 	/**
@@ -97,6 +117,15 @@ public class BinaryIO {
 		// TODO: write this method
 	}
 	
+	
+	public int strToInt(String binStr) {
+		int intStr = 0; 
+		for(int i = 0; i < binStr.length(); i++) {
+			String charAt = binStr.charAt(binStr.length() - 1 - i) + "";
+			intStr += Integer.parseInt(charAt) * Math.pow(2, i); 
+		}
+		return intStr; 
+	}
 
 	
 	/**
@@ -121,6 +150,36 @@ public class BinaryIO {
 	 BufferedInputStream openInputFile(File binFile) throws IOException {
 		binInput = new BufferedInputStream(new FileInputStream(binFile));
 		return binInput;
+	}
+	 
+	public static void main(String[] args) {
+		byte aByte = 0b111;
+		
+		byte newByte;
+		String binStr = "01101111";
+		int intStr = 0; 
+		for(int i = 0; i < binStr.length(); i++) {
+			String charAt = binStr.charAt(binStr.length() - 1 - i) + "";
+			intStr += Integer.parseInt(charAt) * Math.pow(2, i); 
+		}
+		System.out.println(intStr);
+		
+		String inBinStr ="01101111";
+//		int intStr;
+		String byteStr;
+		byte writeByte;
+		
+		while(inBinStr.length() >= 8) {
+			byteStr = inBinStr.substring(0, 8);
+			for(int i = 0; i < binStr.length(); i++) {
+				String charAt = binStr.charAt(binStr.length() - 1 - i) + "";
+				intStr += Integer.parseInt(charAt) * Math.pow(2, i); 
+			}
+			writeByte = (byte)(intStr);
+//			binOutput.write(writeByte);
+			System.out.println(writeByte);
+			inBinStr = inBinStr.substring(8); 
+		}
 	}
 
 }

@@ -91,8 +91,18 @@ public class EncodeDecode {
 		//Cannot read file
 		if(!frequencyFile.canRead()) {
 			gui.errorAlert("Can't read file", "Type valid file name");
+			return;
 		}
 		
+		weights = huffUtil.readFreqWeights(frequencyFile); 
+		huffUtil.setWeights(weights);
+		gui.confirmationAlert("Read File Succesfully", "Finished finding the frequency of the file");
+		
+		huffUtil.initializeHuffmanQueue(optimize);
+		huffUtil.buildHuffmanTree(optimize);
+		huffUtil.createHuffmanCodes(root, "", 0);
+		
+
 		
 		
 	}
@@ -111,7 +121,16 @@ public class EncodeDecode {
 	 * @param inFile the File object that represents the file to be compressed
 	 * @param binFile the File object that represents the compressed output file
 	 */
-	void executeEncode(File inFile, File binFile) {
+	void executeEncode(File frequencyFile, File binFile) {
+		
+		weights = huffUtil.readFreqWeights(frequencyFile); 
+		huffUtil.setWeights(weights);
+		gui.confirmationAlert("Read File Succesfully", "Finished finding the frequency of the file");
+		
+		huffUtil.initializeHuffmanQueue(false);
+		huffUtil.buildHuffmanTree(false);
+		huffUtil.createHuffmanCodes(root, "", 0);
+		
 	}
 	
 	/**
