@@ -90,14 +90,20 @@ public class BinaryIO {
 	 * @return the string
 	 */
 	 String convBinToStr(byte aByte) {
-		String binStr = "";
+		String binStr = ""; 
 		
-		byte newByte;
+		byte iterByte = aByte;
 		
 		for(int i = 0; i < 8; i++) {
-			newByte = (byte)(aByte << (8-i));
-//			if(newByte )
+			System.out.println(iterByte & 0b1);
+			if((iterByte & 0b1) == 0)
+				binStr = "0" + binStr;
+			else 
+				binStr = "1" + binStr;
+			
+			iterByte = (byte)(iterByte >>> 1); 
 		}
+		
 		
 		return binStr;
 	}
@@ -153,33 +159,23 @@ public class BinaryIO {
 	}
 	 
 	public static void main(String[] args) {
-		byte aByte = 0b111;
+		String binStr = "";
+		byte aByte = 0b00010101;
 		
-		byte newByte;
-		String binStr = "01101111";
-		int intStr = 0; 
-		for(int i = 0; i < binStr.length(); i++) {
-			String charAt = binStr.charAt(binStr.length() - 1 - i) + "";
-			intStr += Integer.parseInt(charAt) * Math.pow(2, i); 
+		byte iterByte = (byte) aByte;
+		
+		for(int i = 0; i < 8; i++) {
+			System.out.println(iterByte & 0b1);
+			if((iterByte & 0b1) == 0)
+				binStr = "0" + binStr;
+			else 
+				binStr = "1" + binStr;
+			iterByte = (byte)(iterByte >>> 1); 
+//			System.out.println(iterByte);
 		}
-		System.out.println(intStr);
 		
-		String inBinStr ="01101111";
-//		int intStr;
-		String byteStr;
-		byte writeByte;
 		
-		while(inBinStr.length() >= 8) {
-			byteStr = inBinStr.substring(0, 8);
-			for(int i = 0; i < binStr.length(); i++) {
-				String charAt = binStr.charAt(binStr.length() - 1 - i) + "";
-				intStr += Integer.parseInt(charAt) * Math.pow(2, i); 
-			}
-			writeByte = (byte)(intStr);
-//			binOutput.write(writeByte);
-			System.out.println(writeByte);
-			inBinStr = inBinStr.substring(8); 
-		}
+		System.out.println(binStr);
 	}
 
 }

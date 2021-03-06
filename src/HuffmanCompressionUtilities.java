@@ -151,6 +151,7 @@ public class HuffmanCompressionUtilities {
 		encodeMap = new String[128];
 		root = null; 
 		
+		//Delcaring variables
 		HuffmanTreeNode leftNode;
 		HuffmanTreeNode rightNode;
 		HuffmanTreeNode parentNode; 
