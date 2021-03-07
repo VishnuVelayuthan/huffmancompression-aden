@@ -120,7 +120,15 @@ public class BinaryIO {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	void writeEOF(String EOF_binStr) throws IOException {
-		// TODO: write this method
+		
+		binStr += EOF_binStr;
+		
+		while((binStr.length() % 8) != 0) 
+			binStr += "0";
+		
+		convStrToBin(binStr);
+		binOutput.close();
+		binStr = "";
 	}
 	
 	
