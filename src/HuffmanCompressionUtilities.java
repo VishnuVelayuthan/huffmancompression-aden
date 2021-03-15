@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -77,8 +78,9 @@ public class HuffmanCompressionUtilities {
 			int intVal; 
 			
 			while((newLine=bufferRead.readLine()) != null) {
-				intVal = Integer.parseInt(newLine.split(",")[0]); 
-				freqVal = Integer.parseInt(newLine.split(",")[1]);
+				String[] intFreqVals = newLine.split(",");
+				intVal = Integer.parseInt(intFreqVals[0]); 
+				freqVal = Integer.parseInt(intFreqVals[1]);
 				weights[intVal] = freqVal; 
 			}
 			
@@ -258,31 +260,30 @@ public class HuffmanCompressionUtilities {
 	 */
 	private byte traverseTree(HuffmanTreeNode root, String binStr) {
 		
-		HuffmanTreeNode iterNode = this.root; 
+		//If found
+		if(root.isLeaf())
+			return (byte) root.getOrdValue();
 		
-		for (int binC = 0; binC < binStr.length(); binC++) {
-			char bin = binStr.charAt(binC);
-			
-			if(iterNode.isLeaf()) {
-				binStr = binStr.substring(binC); 
-			}
-			if(bin == '1')
-				iterNode = iterNode.getRight();
-			else 
-				iterNode = iterNode.getLeft(); 
-		}
-		return -1; // remove when completed.
+		//If not found
+		if(binStr.length() == 0)
+			return -1;
+		
+		//For traversing
+		if(binStr.charAt(0) == '1')
+			return traverseTree(root.getRight(), binStr.substring(1));
+		else
+			return traverseTree(root.getLeft(), binStr.substring(1));
 	}
 	
 	private void findCode(String code, HuffmanTreeNode iterNode) {
 		
 		//Base case
-		if(iterNode == null)
+		if(iterNode == null) {
 			return; 
+		}
 		
 		if(iterNode.isLeaf()) {
-			encodeMap[iterNode.getOrdValue()] = code; 
-			return; 
+			encodeMap[iterNode.getOrdValue()] = code;  
 		}
 		
 		findCode(code + "0", iterNode.getLeft());
@@ -303,8 +304,19 @@ public class HuffmanCompressionUtilities {
 	 */
 	public byte decodeString(String binStr) {
 		
-		return -1; // remove when completed.
+		//If it is empty
+		if(binStr.isEmpty())
+			return -1; 
+		
+		String binStrCo = binStr; 
+		
+		byte foundChar = traverseTree(this.root, binStr);
+		
+		//Some might call it unreadable. I call it experimental
+		binStr = (foundChar != -1) ? binStr : binStrCo;
+		return (foundChar != -1) ? foundChar : -1;
 	}
+	
 		
 	/**
 	 * To string.

@@ -95,7 +95,6 @@ public class BinaryIO {
 		byte iterByte = aByte;
 		
 		for(int i = 0; i < 8; i++) {
-			System.out.println(iterByte & 0b1);
 			if((iterByte & 0b1) == 0)
 				binStr = "0" + binStr;
 			else 
@@ -127,12 +126,13 @@ public class BinaryIO {
 			binStr += "0";
 		
 		convStrToBin(binStr);
+		binOutput.flush();
 		binOutput.close();
 		binStr = "";
 	}
 	
 	
-	public int strToInt(String binStr) {
+	private int strToInt(String binStr) {
 		int intStr = 0; 
 		for(int i = 0; i < binStr.length(); i++) {
 			String charAt = binStr.charAt(binStr.length() - 1 - i) + "";

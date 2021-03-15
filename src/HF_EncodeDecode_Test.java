@@ -72,7 +72,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+".bin",base+".csv",true);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+".bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 17));
 		
 	}
 	
@@ -90,8 +90,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+"_full.bin",base+".csv",false);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+"_full.bin");
-		assertTrue(binOutf.exists());
-		
+		assertTrue(checkBinaryOutput(binOutf, 17));
 	}
 	
 	@Test
@@ -108,7 +107,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+".bin",base+".csv",true);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+".bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 2047));
 		
 	}
 	
@@ -126,7 +125,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+".bin",base+".csv",true);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+".bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 4297));
 		
 	}
 	
@@ -144,7 +143,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+".bin",base+".csv",true);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+".bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 259670));
 		
 	}
 	
@@ -162,7 +161,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+".bin",base+".csv",true);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+".bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 1875089));
 		
 	}
 	
@@ -180,7 +179,7 @@ class HF_EncodeDecode_Test {
 		enc_dec.encode(base+".txt", base+"_full.bin",base+".csv",false);
 		// recreate file handle to test existence of binary file
 		binOutf = new File("output/"+base+"_full.bin");
-		assertTrue(binOutf.exists());
+		assertTrue(checkBinaryOutput(binOutf, 1875089));
 		
 	}
 	
@@ -204,9 +203,9 @@ class HF_EncodeDecode_Test {
 		assertTrue(compareFiles(origFh, outFh));	
 		outFh = new File("output/"+base+".txt");
 		removeOutputTextFile(base);
-		removeBinaryFile(base);
+		//removeBinaryFile(base);
 	}
-	
+
 	@Test
 	@Order(11)
 	void test_decode_simple_full() {
@@ -226,7 +225,7 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base+"_full");
-		removeBinaryFile(base+"_full");
+//		removeBinaryFile(base+"_full");
 	}
 	
 	@Test
@@ -248,7 +247,7 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base);
-		removeBinaryFile(base);
+//		removeBinaryFile(base);
 	}
 	
 	@Test
@@ -270,7 +269,7 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base);
-		removeBinaryFile(base);
+//		removeBinaryFile(base);
 	}
 	
 	@Test
@@ -292,7 +291,7 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base);
-		removeBinaryFile(base);
+//		removeBinaryFile(base);
 	}
 	
 	@Test
@@ -314,7 +313,7 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base);
-		removeBinaryFile(base);
+//		removeBinaryFile(base);
 	}
 	
 	@Test
@@ -336,9 +335,24 @@ class HF_EncodeDecode_Test {
 		File origFh = new File("data/"+base+".txt");
 		assertTrue(compareFiles(origFh, outFh));	
 		removeOutputTextFile(base+"_full");
-		removeBinaryFile(base+"_full");
+//		removeBinaryFile(base+"_full");
 	}
 
+	private boolean checkBinaryOutput(File binOutf, int expectedSize) {
+		if (!binOutf.exists()) {
+			System.out.println("   Encode did not create file "+binOutf.getPath());
+			return false;
+		}
+		else if (binOutf.length() == 0) {
+			System.out.println("   Encode created empty file "+binOutf.getPath());
+			return false;			
+		} else if ((binOutf.length() < (0.9*expectedSize)) || (binOutf.length() > (1.1*expectedSize))) {
+			System.out.println("   Encode created file "+binOutf.getPath()+", but file size is not within 10% of expectations");
+			return false;			
+		}
+		return true;
+	}
+	
 	private boolean compareFiles(File fh1, File fh2) {
 		BufferedInputStream inFh1 = null;
 		BufferedInputStream inFh2 = null;
@@ -358,7 +372,16 @@ class HF_EncodeDecode_Test {
 		while (!EOF) {
 			int byte_fh1 = readByteFromInStream(inFh1);
 			int byte_fh2 = readByteFromInStream(inFh2);
+			byte_cnt++;
+			EOF = byte_fh1 == -1;		
 			match = byte_fh1 == byte_fh2;
+			if (EOF && !match) {
+				if (byte_fh2 == 13)   // is there a CR? if so, must be followed by a \n
+				   byte_fh2 = readByteFromInStream(inFh2);
+				if (byte_fh2 == 10)   // is there a \n?
+					byte_fh2 = readByteFromInStream(inFh2); // should be EOF now
+				match = byte_fh1 == byte_fh2;
+			}
 			if (!match) { 
 				System.out.println("Mismatch detected between file "+fh1.getPath()+" and file "+fh2.getPath()+" at byte "+byte_cnt);
 			    System.out.println("   Expected byte value = "+byte_fh1+"("+((char) byte_fh1)+")");
@@ -367,7 +390,7 @@ class HF_EncodeDecode_Test {
 			    closeInStream(inFh2);
 				return false;
 			}
-			EOF = byte_fh1 == -1;
+
 		}	
 	    closeInStream(inFh1);
 	    closeInStream(inFh2);
@@ -388,16 +411,12 @@ class HF_EncodeDecode_Test {
 		System.out.println("Generating weights file: "+ base+".csv");
 
 		System.out.println("Checking if file exists: "+wtsFh.getPath());
-		if (wtsFh.exists()) {
-			return true;
-		} else {
-			weights = gw.readInputFileAndReturnWeights("data/" + base+".txt");
-			writeWeightsFile(wtsFh);
-			if (wtsFh.exists()) 
-				return true;
-			else 
-				return false;
-		}
+		if (wtsFh.exists()) 
+			wtsFh.delete();
+		
+		weights = gw.readInputFileAndReturnWeights("data/" + base+".txt");
+		writeWeightsFile(wtsFh);
+		return  (wtsFh.exists()); 
 	}	
 	
 	private void writeWeightsFile(File outf) {

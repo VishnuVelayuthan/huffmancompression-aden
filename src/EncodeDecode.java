@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 // TODO: Auto-generated Javadoc
@@ -80,30 +81,33 @@ public class EncodeDecode {
 			return;
 		}
 		
-		File frequencyFile = new File(freqWts);
+		File inFile = new File("data/" + fName);
 		
 		//File does not exist
-		if(!frequencyFile.exists()) {
+		if(!inFile.exists()) {
 			gui.errorAlert("File does not exist", "Type valide file name"); 
 			return;
 		}
 			
 		//Cannot read file
-		if(!frequencyFile.canRead()) {
+		if(!inFile.canRead()) {
 			gui.errorAlert("Can't read file", "Type valid file name");
 			return;
 		}
 		
+		File frequencyFile = new File("output/" + freqWts);
+		
+		
+		
 		weights = huffUtil.readFreqWeights(frequencyFile); 
 		huffUtil.setWeights(weights);
-		gui.confirmationAlert("Read File Succesfully", "Finished finding the frequency of the file");
 		
-		huffUtil.initializeHuffmanQueue(optimize);
 		huffUtil.buildHuffmanTree(optimize);
-		huffUtil.createHuffmanCodes(root, "", 0);
+		huffUtil.createHuffmanCodes(huffUtil.getTreeRoot(), "", 0);
 		
-
+		File binFile = new File("output/" + bfName); 
 		
+		this.executeEncode(inFile, binFile);		
 		
 	}
 	
@@ -121,16 +125,30 @@ public class EncodeDecode {
 	 * @param inFile the File object that represents the file to be compressed
 	 * @param binFile the File object that represents the compressed output file
 	 */
-	void executeEncode(File frequencyFile, File binFile) {
+	void executeEncode(File inFile, File binFile) {
+		encodeMap = huffUtil.getEncodeMap(); 
 		
-		weights = huffUtil.readFreqWeights(frequencyFile); 
-		huffUtil.setWeights(weights);
-		gui.confirmationAlert("Read File Succesfully", "Finished finding the frequency of the file");
-		
-		huffUtil.initializeHuffmanQueue(false);
-		huffUtil.buildHuffmanTree(false);
-		huffUtil.createHuffmanCodes(root, "", 0);
-		
+		try(BufferedReader bufferRead = new BufferedReader(new FileReader(inFile))) {
+			
+			binUtil.openInputFile(inFile);
+			binUtil.openOutputFile(binFile);
+			
+			String newLine;
+			String binStr; 
+			while((newLine=bufferRead.readLine()) != null) {
+				for(char character : newLine.toCharArray()) {
+					if ((int)character < 128) {
+						binStr = encodeMap[(int)character]; 
+						binUtil.convStrToBin(binStr);
+					}
+				}
+			}
+			binUtil.writeEOF(encodeMap[0]);
+			
+		} catch (IOException e) {
+			gui.errorAlert("Input file error", "Error in reading file");
+			return;
+		}
 	}
 	
 	/**
@@ -151,7 +169,30 @@ public class EncodeDecode {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	void decode(String bfName, String ofName, String freqWts,boolean optimize) {
+		if(bfName.isEmpty() || freqWts.isEmpty()) {
+			gui.errorAlert("File is Empty", "Type valid file name");
+			return;
+		}
+		
+		File frequencyFile = new File(freqWts);
+		
+		//File does not exist
+		if(!frequencyFile.exists()) {
+			gui.errorAlert("File does not exist", "Type valide file name"); 
+			return;
+		}
+			
+		//Cannot read file
+		if(!frequencyFile.canRead()) {
+			gui.errorAlert("Can't read file", "Type valid file name");
+			return;
+		}
+		
+		
+		
 	}
+	
+	
 	
 	/**
 	 * Execute decode.  - This is part of PART3...
@@ -170,40 +211,7 @@ public class EncodeDecode {
 	 */
 	void executeDecode(File binFile, File outFile) throws IOException {
 	}
-	
-	
-	//This needs some work 
-	public String findPath(int ordVal, String s, HuffmanTreeNode node) {
-		if (node.getOrdValue() == ordVal) {
-			return s;
-		}
-		findPath(ordVal, s + "0", node.getLeft());
-		findPath(ordVal, s + "1", node.getRight());
-		return "";
 		
-	}
-	
-	public static void main(String[] args) {
-try(BufferedReader bufferRead = new BufferedReader(new FileReader("output/war-and-peace.txt"))) {
-			
-			int[] weights = new int[128];
-			String newLine; 
-			int freqVal;
-			int intVal; 
-			
-			while((newLine=bufferRead.readLine()) != null) {
-				intVal = Integer.parseInt(newLine.split(",")[0]); 
-				freqVal = Integer.parseInt(newLine.split(",")[1]);
-				weights[intVal] = freqVal; 
-				System.out.println(weights[intVal]);
-			}
-			
-		} catch (IOException e) {
-//			gui.errorAlert("Input File Error", "Error in reading the file");
-			return;
-		}
-	}
-	
 	
 	
 }
