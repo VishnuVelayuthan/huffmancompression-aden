@@ -348,8 +348,10 @@ class HF_EncodeDecode_Test {
 			return false;			
 		} else if ((binOutf.length() < (0.9*expectedSize)) || (binOutf.length() > (1.1*expectedSize))) {
 			System.out.println("   Encode created file "+binOutf.getPath()+", but file size is not within 10% of expectations");
+			System.out.println("-------- Checking post greenegss ----------" + binOutf.length() + "Lenght of binOutf   " + expectedSize);
 			return false;			
 		}
+		
 		return true;
 	}
 	

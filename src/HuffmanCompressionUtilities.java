@@ -204,6 +204,9 @@ public class HuffmanCompressionUtilities {
 		findCode(code, node); 
 	}
 
+	public void createHuffmanCodes() {
+		findCode("", this.root); 
+	}
 	/**
 	 * Prints the huffman tree. for debugging purposes...
 	 *

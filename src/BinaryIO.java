@@ -166,25 +166,5 @@ public class BinaryIO {
 		return binInput;
 	}
 	 
-	public static void main(String[] args) {
-		String binStr = "";
-		byte aByte = 0b00010101;
-		
-		byte iterByte = (byte) aByte;
-		
-		for(int i = 0; i < 8; i++) {
-			System.out.println(iterByte & 0b1);
-			if((iterByte & 0b1) == 0)
-				binStr = "0" + binStr;
-			else 
-				binStr = "1" + binStr;
-			iterByte = (byte)(iterByte >>> 1); 
-//			System.out.println(iterByte);
-		}
-		
-		
-		System.out.println(binStr);
-	}
-
 }
 

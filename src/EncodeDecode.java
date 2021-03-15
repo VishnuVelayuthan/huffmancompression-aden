@@ -103,7 +103,7 @@ public class EncodeDecode {
 		huffUtil.setWeights(weights);
 		
 		huffUtil.buildHuffmanTree(optimize);
-		huffUtil.createHuffmanCodes(huffUtil.getTreeRoot(), "", 0);
+		huffUtil.createHuffmanCodes();
 		
 		File binFile = new File("output/" + bfName); 
 		
@@ -135,10 +135,12 @@ public class EncodeDecode {
 			
 			String newLine;
 			String binStr; 
+			int charInt;
 			while((newLine=bufferRead.readLine()) != null) {
 				for(char character : newLine.toCharArray()) {
-					if ((int)character < 128) {
-						binStr = encodeMap[(int)character]; 
+					charInt = (int)character;
+					if (charInt < 128) {
+						binStr = encodeMap[charInt]; 
 						binUtil.convStrToBin(binStr);
 					}
 				}
@@ -174,22 +176,36 @@ public class EncodeDecode {
 			return;
 		}
 		
-		File frequencyFile = new File(freqWts);
+		File binInFile = new File(bfName); 
 		
 		//File does not exist
-		if(!frequencyFile.exists()) {
+		if(!binInFile.exists()) {
 			gui.errorAlert("File does not exist", "Type valide file name"); 
 			return;
 		}
 			
 		//Cannot read file
-		if(!frequencyFile.canRead()) {
+		if(!binInFile.canRead()) {
 			gui.errorAlert("Can't read file", "Type valid file name");
 			return;
 		}
 		
+		File frequencyFile = new File(freqWts);
+		
+		weights = huffUtil.readFreqWeights(frequencyFile); 
+		huffUtil.setWeights(weights);
+		
+		huffUtil.buildHuffmanTree(optimize);
+		huffUtil.createHuffmanCodes();
 		
 		
+		try {
+			File binOutFile = new File(ofName);
+			this.executeDecode(binInFile, binOutFile);
+		} 
+		catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -210,6 +226,21 @@ public class EncodeDecode {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	void executeDecode(File binFile, File outFile) throws IOException {
+		encodeMap = huffUtil.getEncodeMap(); 
+		
+		try(BufferedReader bufferRead = new BufferedReader(new FileReader(binFile))) {
+			
+			binUtil.openInputFile(binFile);
+			binUtil.openOutputFile(outFile);
+			
+			String newLine;
+			String binStr;
+			
+			while((newLine=bufferRead.readLine()) != null) {
+				binUtil.convStrToBin(newLine);
+				
+			}
+		}
 	}
 		
 	
