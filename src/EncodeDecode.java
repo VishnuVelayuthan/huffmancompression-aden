@@ -2,7 +2,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -82,6 +84,8 @@ public class EncodeDecode {
 		}
 		
 		File inFile = new File("data/" + fName);
+		File frequencyFile = new File("output/" + freqWts);
+		File binFile = new File("output/" + bfName);
 		
 		//File does not exist
 		if(!inFile.exists()) {
@@ -95,8 +99,6 @@ public class EncodeDecode {
 			return;
 		}
 		
-		File frequencyFile = new File("output/" + freqWts);
-		
 		
 		
 		weights = huffUtil.readFreqWeights(frequencyFile); 
@@ -105,7 +107,7 @@ public class EncodeDecode {
 		huffUtil.buildHuffmanTree(optimize);
 		huffUtil.createHuffmanCodes();
 		
-		File binFile = new File("output/" + bfName); 
+		 
 		
 		this.executeEncode(inFile, binFile);		
 		
@@ -128,15 +130,21 @@ public class EncodeDecode {
 	void executeEncode(File inFile, File binFile) {
 		encodeMap = huffUtil.getEncodeMap(); 
 		
-		try(BufferedReader bufferRead = new BufferedReader(new FileReader(inFile))) {
+//		for (int i = 0; i < encodeMap.length; i++) {
+//            if (encodeMap[i] != null) {
+//                System.out.println(i + "," + encodeMap[i]);
+//            }
+//        }
+		
+		
+		try(BufferedReader br = new BufferedReader(new FileReader(inFile))) {
 			
-			binUtil.openInputFile(inFile);
 			binUtil.openOutputFile(binFile);
 			
 			String newLine;
 			String binStr; 
 			int charInt;
-			while((newLine=bufferRead.readLine()) != null) {
+			while((newLine=br.readLine()) != null) {
 				for(char character : newLine.toCharArray()) {
 					charInt = (int)character;
 					if (charInt < 128) {
@@ -176,7 +184,9 @@ public class EncodeDecode {
 			return;
 		}
 		
-		File binInFile = new File(bfName); 
+		File binInFile = new File("output/" + bfName); 
+		File frequencyFile = new File("output/" + freqWts);
+		File binOutFile = new File("output/" + ofName);
 		
 		//File does not exist
 		if(!binInFile.exists()) {
@@ -190,8 +200,6 @@ public class EncodeDecode {
 			return;
 		}
 		
-		File frequencyFile = new File(freqWts);
-		
 		weights = huffUtil.readFreqWeights(frequencyFile); 
 		huffUtil.setWeights(weights);
 		
@@ -200,7 +208,9 @@ public class EncodeDecode {
 		
 		
 		try {
-			File binOutFile = new File(ofName);
+			input = new BufferedInputStream(new FileInputStream(binInFile));
+			output = new BufferedOutputStream(new FileOutputStream(binOutFile)); 
+			
 			this.executeDecode(binInFile, binOutFile);
 		} 
 		catch(IOException e) {
@@ -228,21 +238,25 @@ public class EncodeDecode {
 	void executeDecode(File binFile, File outFile) throws IOException {
 		encodeMap = huffUtil.getEncodeMap(); 
 		
-		try(BufferedReader bufferRead = new BufferedReader(new FileReader(binFile))) {
-			
-			binUtil.openInputFile(binFile);
-			binUtil.openOutputFile(outFile);
-			
-			String newLine;
-			String binStr;
-			
-			while((newLine=bufferRead.readLine()) != null) {
-				binUtil.convStrToBin(newLine);
-				
-			}
-		}
-	}
+		String binStr = ""; 
+		byte inpByte; 
+		byte decodedByte;
 		
-	
+		while((inpByte=(byte)input.read()) != -1) {
+			binStr += binUtil.convBinToStr(inpByte);
+			
+			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
+				output.write((char)decodedByte);
+				binStr = binStr.substring(encodeMap[decodedByte].length());
+			}
+			
+			System.out.println("------------------This is decodedByte: " + decodedByte + " ------------------");
+		}
+		
+		output.flush();
+		output.close();
+		input.close();
+
+	}
 	
 }

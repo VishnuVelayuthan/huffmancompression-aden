@@ -105,14 +105,18 @@ public class HuffmanCompressionUtilities {
 		
 		for(int ordVal = 1; ordVal < weights.length; ordVal++) {
 			
-			if(minimize) {
-				if(weights[ordVal] != 0){
-					queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
-				}
-			}
-			else {
-				queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
-			}
+			if (!minimize || weights[ordVal] != 0) {
+                queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
+            }
+			
+//			if(minimize) {
+//				if(weights[ordVal] != 0){
+//					queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
+//				}
+//			}
+//			else {
+//				queue.add(new HuffmanTreeNode(ordVal, weights[ordVal]));
+//			}
 		}
 		
 //		dumpQueue("After initializatoins"); 
@@ -286,7 +290,8 @@ public class HuffmanCompressionUtilities {
 		}
 		
 		if(iterNode.isLeaf()) {
-			encodeMap[iterNode.getOrdValue()] = code;  
+			encodeMap[iterNode.getOrdValue()] = code; 
+			return;
 		}
 		
 		findCode(code + "0", iterNode.getLeft());
@@ -314,6 +319,7 @@ public class HuffmanCompressionUtilities {
 		String binStrCo = binStr; 
 		
 		byte foundChar = traverseTree(this.root, binStr);
+		
 		
 		//Some might call it unreadable. I call it experimental
 		binStr = (foundChar != -1) ? binStr : binStrCo;
