@@ -136,22 +136,16 @@ public class EncodeDecode {
 //            }
 //        }
 		
-		
 		try(BufferedReader br = new BufferedReader(new FileReader(inFile))) {
 			
 			binUtil.openOutputFile(binFile);
 			
 			String newLine;
 			String binStr; 
-			int charInt;
-			while((newLine=br.readLine()) != null) {
-				for(char character : newLine.toCharArray()) {
-					charInt = (int)character;
-					if (charInt < 128) {
-						binStr = encodeMap[charInt]; 
-						binUtil.convStrToBin(binStr);
-					}
-				}
+			byte charByte;
+			while((charByte=(byte)br.read()) != -1) {
+					binStr = encodeMap[charByte]; 
+					binUtil.convStrToBin(binStr);
 			}
 			binUtil.writeEOF(encodeMap[0]);
 			
