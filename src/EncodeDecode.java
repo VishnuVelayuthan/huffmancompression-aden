@@ -130,23 +130,18 @@ public class EncodeDecode {
 	void executeEncode(File inFile, File binFile) {
 		encodeMap = huffUtil.getEncodeMap(); 
 		
-//		for (int i = 0; i < encodeMap.length; i++) {
-//            if (encodeMap[i] != null) {
-//                System.out.println(i + "," + encodeMap[i]);
-//            }
-//        }
-		
 		try(BufferedReader br = new BufferedReader(new FileReader(inFile))) {
 			
 			binUtil.openOutputFile(binFile);
 			
-			String newLine;
 			String binStr; 
 			byte charByte;
+			
 			while((charByte=(byte)br.read()) != -1) {
 					binStr = encodeMap[charByte]; 
 					binUtil.convStrToBin(binStr);
 			}
+			
 			binUtil.writeEOF(encodeMap[0]);
 			
 		} catch (IOException e) {
@@ -234,21 +229,28 @@ public class EncodeDecode {
 		
 		String binStr = ""; 
 		byte inpByte; 
-		byte decodedByte;
+		byte decodedByte = -1;
+		int iterate = 0; 
 		
-		while((inpByte=(byte)input.read()) != -1) {
-			binStr += binUtil.convBinToStr(inpByte);
+		while((inpByte=(byte)input.read()) != -1  ||  decodedByte != 0) {
+			binStr += binUtil.convBinToStr((byte)inpByte);
 			
 			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
+				if((int)decodedByte == 0) {
+					output.write((char)-1);
+					iterate++; 
+					break; 
+				}
 				output.write((char)decodedByte);
 				binStr = binStr.substring(encodeMap[decodedByte].length());
+				iterate++; 
 			}
 			
-			System.out.println("------------------This is decodedByte: " + decodedByte + " ------------------");
+//			System.out.println("------------------This is decodedByte: " + decodedByte + " ------------------");
 		}
 		
-		output.flush();
 		output.close();
+		output.flush();
 		input.close();
 
 	}
