@@ -230,23 +230,19 @@ public class EncodeDecode {
 		String binStr = ""; 
 		byte inpByte; 
 		byte decodedByte = -1;
-		int iterate = 0; 
 		
 		while((inpByte=(byte)input.read()) != -1  ||  decodedByte != 0) {
 			binStr += binUtil.convBinToStr((byte)inpByte);
 			
 			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
 				if((int)decodedByte == 0) {
-					output.write((char)-1);
-					iterate++; 
+					output.write((char)-1); 
 					break; 
 				}
 				output.write((char)decodedByte);
 				binStr = binStr.substring(encodeMap[decodedByte].length());
-				iterate++; 
 			}
 			
-//			System.out.println("------------------This is decodedByte: " + decodedByte + " ------------------");
 		}
 		
 		output.close();
