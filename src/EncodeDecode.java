@@ -99,15 +99,11 @@ public class EncodeDecode {
 			return;
 		}
 		
-		
-		
 		weights = huffUtil.readFreqWeights(frequencyFile); 
 		huffUtil.setWeights(weights);
 		
 		huffUtil.buildHuffmanTree(optimize);
 		huffUtil.createHuffmanCodes();
-		
-		 
 		
 		this.executeEncode(inFile, binFile);		
 		
@@ -232,9 +228,9 @@ public class EncodeDecode {
 		byte decodedByte = -1;
 		
 		while((inpByte=(byte)input.read()) != -1 || decodedByte != 0) {
+			
 			binStr += binUtil.convBinToStr((byte)inpByte);
 					
-			
 			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
 				if(decodedByte == 0) {
 					output.write((char)-1); 
@@ -244,7 +240,6 @@ public class EncodeDecode {
 				binStr = binStr.substring(encodeMap[decodedByte].length());
 			}
 			 
-			
 		}
 		
 		output.close();

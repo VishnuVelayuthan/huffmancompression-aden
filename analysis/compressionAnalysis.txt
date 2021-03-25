@@ -1,0 +1,56 @@
+-------------------------------------------------------------------
+Original version of Green Eggs and Ham.txt size: 3475
+
+Same Weights version of Green Eggs and Ham.txt size: 1920
+
+The Cat in the Hat version of Green Eggs and Ham.txt size: 2328
+
+War and Peace version of Green Eggs and Ham.txt size: 2071
+-------------------------------------------------------------------
+Original version of simple.txt size: 32
+
+Same Weights version of simple.txt size: 16
+
+The Cat in the Hat version of simple.txt size: 19
+
+War and Peace version of simple.txt size: 20
+-------------------------------------------------------------------
+Original version of Harry Potter and the Sorcerer.txt size: 442717
+
+Same Weights version of Harry Potter and the Sorcerer.txt size: 253916
+
+The Cat in the Hat version of Harry Potter and the Sorcerer.txt size: 308773
+
+War and Peace version of Harry Potter and the Sorcerer.txt size: 256269
+-------------------------------------------------------------------
+Original version of The Cat in the Hat.txt size: 7354
+
+Same Weights version of The Cat in the Hat.txt size: 4047
+
+The Cat in the Hat version of The Cat in the Hat.txt size: 4047
+
+War and Peace version of The Cat in the Hat.txt size: 4220
+-------------------------------------------------------------------
+Original version of warAndPeace.txt size: 3226604
+
+Same Weights version of warAndPeace.txt size: 1816470
+
+The Cat in the Hat version of warAndPeace.txt size: 2078375
+
+War and Peace version of warAndPeace.txt size: 1816470
+-------------------------------------------------------------------
+Analysis of Huffman Compression: 
+	The Huffman compression is a great file compression algorithm. It compresses the file by almost
+	half of the original size. When using the Cat in the Hat and the War and Peace weights files
+	the pattern you observe is that for larger files the war and peace seems to be close to the
+	original weights compression but a tad bit larger, however, for smaller files, the Cat in the
+	Hat seems to be more efficient, but not by that much. I would suppose this exists because War 
+	and Peace is a large book so it comes closer to having the natural occurence of characters as 
+	any other large book. I would choose War and Peace because it proves to be more efficient for 
+	larger files. 
+-------------------------------------------------------------------
+Oh and, classy choice, Hitch hiker's Guide to the Galaxy, knew INSTANTlY when I read the pity of the whale sperm
+-------------------------------------------------------------------
+PS I'm glad you appreciated me showing my understanding of file manipulation
+Best, 
+VishDaGod
