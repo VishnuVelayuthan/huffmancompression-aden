@@ -237,18 +237,13 @@ public class EncodeDecode {
 			
 			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
 				if(decodedByte == 0) {
-//					output.write((char)-1); 
-					output.flush();
-					output.close();
-					input.close(); 
-					return; 
+					output.write((char)-1); 
+					break; 
 				}
 				output.write((char)decodedByte);
 				binStr = binStr.substring(encodeMap[decodedByte].length());
 			}
-			
-			if(inpByte == -1)
-				break; 
+			 
 			
 		}
 		
