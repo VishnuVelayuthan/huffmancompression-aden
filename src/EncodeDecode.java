@@ -168,7 +168,7 @@ public class EncodeDecode {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	void decode(String bfName, String ofName, String freqWts,boolean optimize) {
-		if(bfName.isEmpty() || freqWts.isEmpty()) {
+		if(bfName.isEmpty() || freqWts.isEmpty() || ofName.isEmpty()) {
 			gui.errorAlert("File is Empty", "Type valid file name");
 			return;
 		}
@@ -178,13 +178,13 @@ public class EncodeDecode {
 		File binOutFile = new File("output/" + ofName);
 		
 		//File does not exist
-		if(!binInFile.exists()) {
+		if(!binInFile.exists() || !frequencyFile.exists()) {
 			gui.errorAlert("File does not exist", "Type valide file name"); 
 			return;
 		}
 			
 		//Cannot read file
-		if(!binInFile.canRead()) {
+		if(!binInFile.canRead() || !frequencyFile.exists()) {
 			gui.errorAlert("Can't read file", "Type valid file name");
 			return;
 		}
@@ -231,17 +231,24 @@ public class EncodeDecode {
 		byte inpByte; 
 		byte decodedByte = -1;
 		
-		while((inpByte=(byte)input.read()) != -1  ||  decodedByte != 0) {
+		while((inpByte=(byte)input.read()) != -1 || decodedByte != 0) {
 			binStr += binUtil.convBinToStr((byte)inpByte);
+					
 			
 			while((decodedByte=huffUtil.decodeString(binStr)) != -1) {
-				if((int)decodedByte == 0) {
-					output.write((char)-1); 
-					break; 
+				if(decodedByte == 0) {
+//					output.write((char)-1); 
+					output.flush();
+					output.close();
+					input.close(); 
+					return; 
 				}
 				output.write((char)decodedByte);
 				binStr = binStr.substring(encodeMap[decodedByte].length());
 			}
+			
+			if(inpByte == -1)
+				break; 
 			
 		}
 		
@@ -249,6 +256,7 @@ public class EncodeDecode {
 		output.flush();
 		input.close();
 
-	}
+	}	
+	
 	
 }

@@ -339,6 +339,7 @@ class HF_EncodeDecode_Test {
 	}
 
 	private boolean checkBinaryOutput(File binOutf, int expectedSize) {
+		System.out.println("   Encode created file " + binOutf.getPath() + ", but file size is not within 10% of expectations\nExpected: " + expectedSize + " Actual: " + binOutf.length());
 		if (!binOutf.exists()) {
 			System.out.println("   Encode did not create file "+binOutf.getPath());
 			return false;
