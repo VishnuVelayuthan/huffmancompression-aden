@@ -27,7 +27,7 @@ public class PostSubmissionStuff {
 //		weightsFileEncoding(fileNames[3]); //Cat in the Hat
 //		weightsFileEncoding(fileNames[4]); //War and Peace
 //		
-//		someFileDecoding(fileNames[2]); //Why did you know i had a soft space for guardians of the galaxy
+//		someFileDecoding(fileNames[2]); //Decoding the file
 		compressionAnalysis(); 
 	}
 	
