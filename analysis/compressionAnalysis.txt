@@ -1,3 +1,4 @@
+Before you embark on this journey, know that this was all made using PrintWriter ;)
 -------------------------------------------------------------------
 Original version of Green Eggs and Ham.txt size: 3475
 

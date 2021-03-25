@@ -73,6 +73,9 @@ public class PostSubmissionStuff {
 			
 			String writeText;
 			File pointerFile;
+			
+			pw.write("Before you embark on this journey, know that this was all made using PrintWriter ;)\n");
+			
 			for(String fileName : fileNames) {
 				
 				writeText = "-------------------------------------------------------------------\n";
